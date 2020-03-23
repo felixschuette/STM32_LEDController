@@ -1,0 +1,8 @@
+led_driver.c:12:6:initializeSPIAdapter	16	static
+led_driver.c:18:13:sendSymbolStreamOnLine	16	static
+led_driver.c:23:13:color2Symbol	32	static
+led_driver.c:38:13:getColorSymbolStream	24	static
+led_driver.c:50:13:buildSymbolStream	32	static
+led_driver.c:63:6:clearLEDs	24	static
+led_driver.c:72:6:showLEDs	24	static
+led_driver.c:80:6:sendOneLEDColor	72	static
