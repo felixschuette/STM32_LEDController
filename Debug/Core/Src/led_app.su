@@ -1,6 +1,10 @@
 led_app.c:13:6:initializeLEDApplication	16	static
-led_app.c:37:16:popQueueElement	24	static
-led_app.c:59:16:pushQueueElement	24	static
-led_app.c:89:6:sendOneLEDColor	40	static
-led_app.c:160:6:test_run	40	static
-led_app.c:252:6:HAL_TIM_PeriodElapsedCallback	16	static
+led_app.c:22:13:isTimerActive	24	static
+led_app.c:35:16:popQueueElement	24	static
+led_app.c:57:16:pushQueueElement	24	static
+led_app.c:87:13:startTimer	16	static
+led_app.c:100:16:showNextPattern	40	static
+led_app.c:122:6:HAL_TIM_PeriodElapsedCallback	16	static
+led_app.c:133:13:testRoutine	80	static
+led_app.c:214:13:unsetNotification	16	static
+led_app.c:218:6:runScheduler	8	static

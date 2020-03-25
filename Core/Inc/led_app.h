@@ -16,11 +16,14 @@
 #include "stdbool.h"
 #include "debug_log.h"
 
+#define LED_BUS1_NOTIF					(0x01)
+#define LED_BUS2_NOTIF					(0x02)
+
 #define LED_BUS1_TIMER 			(TIM2)
 #define LED_BUS2_TIMER			(TIM3)
 
-TIM_HandleTypeDef bus1_timer;
-TIM_HandleTypeDef bus2_timer;
+TIM_HandleTypeDef *bus1_timer;
+TIM_HandleTypeDef *bus2_timer;
 
 typedef struct {
 	led_rgb_color_t *led_colors;
@@ -41,7 +44,7 @@ typedef struct {
 
 void initializeLEDApplication(TIM_HandleTypeDef *htim1, TIM_HandleTypeDef *htim2);
 
-void sendOneLEDColor();
+void runScheduler();
 
 void test_run();
 

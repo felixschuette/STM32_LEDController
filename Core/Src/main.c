@@ -63,18 +63,10 @@ static void MX_SPI1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-//int _write(int file, char *ptr, int len) {
-//	int DataIdx;
-//	for (DataIdx = 0; DataIdx < len; DataIdx++) {
-//		ITM_SendChar(*ptr++);
-//	}
-//	return len;
-//}
 /* USER CODE END 0 */
 
 /**
@@ -114,9 +106,7 @@ int main(void) {
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
 	initializeSPIAdapter(&hspi1, &hspi2);
 	initializeLEDApplication(&htim2, &htim3);
-	__HAL_TIM_CLEAR_IT(&htim3, TIM_IT_UPDATE);
-	HAL_TIM_Base_Start_IT(&htim3);
-	//__HAL_TIM_SET_COUNTER(&htim3, 1);
+	debug_log("Initialization done.");
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -125,9 +115,7 @@ int main(void) {
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		//test_run();
-		HAL_Delay(1000);
-		//sendOneLEDColor();
+		runScheduler();
 
 	}
 	/* USER CODE END 3 */
@@ -258,7 +246,7 @@ static void MX_TIM2_Init(void) {
 	htim2.Instance = TIM2;
 	htim2.Init.Prescaler = 64000;
 	htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-	htim2.Init.Period = 3000;
+	htim2.Init.Period = 4000;
 	htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 	htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 	if (HAL_TIM_Base_Init(&htim2) != HAL_OK) {
