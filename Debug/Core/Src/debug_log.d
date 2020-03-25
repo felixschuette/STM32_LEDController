@@ -1,4 +1,4 @@
-Core/Src/led_app.o: ../Core/Src/led_app.c ../Core/Inc/led_app.h \
+Core/Src/debug_log.o: ../Core/Src/debug_log.c ../Core/Inc/debug_log.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
@@ -22,10 +22,9 @@ Core/Src/led_app.o: ../Core/Src/led_app.c ../Core/Inc/led_app.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
- ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
- ../Core/Inc/sk6812_rgbw.h ../Core/Inc/debug_log.h
+ ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 
-../Core/Inc/led_app.h:
+../Core/Inc/debug_log.h:
 
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 
@@ -74,7 +73,3 @@ Core/Src/led_app.o: ../Core/Src/led_app.c ../Core/Inc/led_app.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h:
 
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h:
-
-../Core/Inc/sk6812_rgbw.h:
-
-../Core/Inc/debug_log.h:

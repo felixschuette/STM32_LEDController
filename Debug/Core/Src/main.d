@@ -23,7 +23,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
- ../Core/Inc/led_app.h ../Core/Inc/sk6812_rgbw.h
+ ../Core/Inc/led_app.h ../Core/Inc/sk6812_rgbw.h ../Core/Inc/debug_log.h
 
 ../Core/Inc/main.h:
 
@@ -78,3 +78,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/led_app.h:
 
 ../Core/Inc/sk6812_rgbw.h:
+
+../Core/Inc/debug_log.h:

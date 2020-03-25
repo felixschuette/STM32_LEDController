@@ -16,8 +16,8 @@
 #define LED_STREAM_LENGTH(LED_NUM)  (START_OFFSET +(SINGLE_LED_FRAME_SIZE*LED_NUM) + RESET_TIME)
 
 DMA_HandleTypeDef hdma;
-SPI_HandleTypeDef first_hspi;
-SPI_HandleTypeDef second_hspi;
+SPI_HandleTypeDef bus1;
+SPI_HandleTypeDef bus2;
 
 typedef struct{
 	uint8_t red;

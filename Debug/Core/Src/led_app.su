@@ -1,6 +1,6 @@
-led_app.c:13:6:initializeLEDApplication	4	static
-led_app.c:20:16:popQueueElement	16	static
-led_app.c:37:16:appendToQueue	16	static
-led_app.c:54:6:sendOneLEDColor	64	static
-led_app.c:124:6:HAL_TIM_PeriodElapsedCallback	16	static
-led_app.c:137:6:HAL_TIM_TriggerCallback	16	static
+led_app.c:13:6:initializeLEDApplication	16	static
+led_app.c:37:16:popQueueElement	24	static
+led_app.c:59:16:pushQueueElement	24	static
+led_app.c:89:6:sendOneLEDColor	40	static
+led_app.c:160:6:test_run	40	static
+led_app.c:252:6:HAL_TIM_PeriodElapsedCallback	16	static

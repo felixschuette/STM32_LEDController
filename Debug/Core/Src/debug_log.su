@@ -1,0 +1,2 @@
+debug_log.c:9:10:rtc_get_time_usec	16	static
+debug_log.c:14:6:debug_log	16	static

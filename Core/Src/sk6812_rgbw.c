@@ -10,11 +10,11 @@
 #include <stdlib.h>
 
 void initializeSPIAdapter(SPI_HandleTypeDef *hspi_1, SPI_HandleTypeDef *hspi_2) {
-	memcpy(&first_hspi, hspi_1, sizeof(SPI_HandleTypeDef));
-	memcpy(&second_hspi, hspi_2, sizeof(SPI_HandleTypeDef));
+	memcpy(&bus1, hspi_1, sizeof(SPI_HandleTypeDef));
+	memcpy(&bus2, hspi_2, sizeof(SPI_HandleTypeDef));
 
-	HAL_SPI_MspInit(&first_hspi);
-	HAL_SPI_MspInit(&second_hspi);
+	HAL_SPI_MspInit(&bus1);
+	HAL_SPI_MspInit(&bus2);
 }
 
 static void sendSymbolStreamOnLine(uint8_t *symbols, uint16_t length,
@@ -22,10 +22,10 @@ static void sendSymbolStreamOnLine(uint8_t *symbols, uint16_t length,
 	SPI_HandleTypeDef hspi;
 
 	if(busNum == bus_1){
-		hspi = first_hspi;
+		hspi = bus1;
 	}
 	else if(busNum == bus_2){
-		hspi = second_hspi;
+		hspi = bus2;
 	}
 
 	HAL_SPI_Transmit_DMA(&hspi, symbols, length);
