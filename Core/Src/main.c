@@ -90,7 +90,8 @@ int main(void) {
 	SystemClock_Config();
 
 	/* USER CODE BEGIN SysInit */
-	debug_log("Q-loud LEDController Init ...");
+	debug_log("Q-loud LED Controller v1.0");
+	//debug_log("");
 	/* USER CODE END SysInit */
 
 	/* Initialize all configured peripherals */

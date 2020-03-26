@@ -16,14 +16,11 @@
 #include "stdbool.h"
 #include "debug_log.h"
 
-#define LED_BUS1_NOTIF					(0x01)
-#define LED_BUS2_NOTIF					(0x02)
+#define LED_BUS1_NOTIF					(1 << 0)
+#define LED_BUS2_NOTIF					(1 << 1)
 
 #define LED_BUS1_TIMER 			(TIM2)
 #define LED_BUS2_TIMER			(TIM3)
-
-TIM_HandleTypeDef *bus1_timer;
-TIM_HandleTypeDef *bus2_timer;
 
 typedef struct {
 	led_rgb_color_t *led_colors;
@@ -41,6 +38,14 @@ typedef struct {
 	led_stripe_queue_element_t *head;
 	led_stripe_queue_element_t *tail;
 } led_pattern_queue_t;
+
+typedef struct {
+	TIM_HandleTypeDef *timer;
+	spi_bus_num_t spi_bus;
+	led_pattern_queue_t *queue;
+	bool is_animating;
+	bool is_timer_active;
+} led_stripe_t;
 
 void initializeLEDApplication(TIM_HandleTypeDef *htim1, TIM_HandleTypeDef *htim2);
 

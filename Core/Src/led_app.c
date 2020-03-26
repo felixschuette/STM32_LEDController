@@ -6,30 +6,27 @@
  */
 #include "led_app.h"
 
-led_pattern_queue_t Bus1_LEDStripeQueue = { };
-led_pattern_queue_t Bus2_LEDStripeQueue = { };
+led_stripe_t Bus1_LEDStripe;
+led_stripe_t Bus2_LEDStripe;
+
 uint32_t notif;
 
 void initializeLEDApplication(TIM_HandleTypeDef *htim1,
 		TIM_HandleTypeDef *htim2) {
-	Bus1_LEDStripeQueue.head = NULL;
-	Bus2_LEDStripeQueue.head = NULL;
+	/* Initializing the LED stripe stuctures */
+	Bus1_LEDStripe.timer = htim1;
+	Bus1_LEDStripe.is_animating = false;
+	Bus1_LEDStripe.spi_bus = bus_1;
+	Bus1_LEDStripe.queue = malloc(sizeof(led_pattern_queue_t));
+	Bus1_LEDStripe.queue->head = NULL;
+	Bus1_LEDStripe.is_timer_active = false;
 
-	bus1_timer = htim1;
-	bus2_timer = htim2;
-}
-
-static bool isTimerActive(uint8_t timer_id) {
-	bool isTimerActive = false;
-
-//	switch (timer_id) {
-//	case (LED_BUS1_TIMER):
-//		break;
-//	case (LED_BUS2_TIMER):
-//		break;
-//	}
-
-	return isTimerActive;
+	Bus2_LEDStripe.timer = htim2;
+	Bus2_LEDStripe.is_animating = false;
+	Bus2_LEDStripe.spi_bus = bus_2;
+	Bus2_LEDStripe.queue = malloc(sizeof(led_pattern_queue_t));
+	Bus2_LEDStripe.queue->head = NULL;
+	Bus2_LEDStripe.is_timer_active = false;
 }
 
 static uint8_t popQueueElement(led_pattern_queue_t *queue,
@@ -97,25 +94,27 @@ static void startTimer(TIM_HandleTypeDef *timer, uint32_t duration_ms) {
 	HAL_TIM_Base_Start_IT(timer);
 }
 
-static uint8_t showNextPattern(led_pattern_queue_t *queue,
-		TIM_HandleTypeDef *timer, spi_bus_num_t busNum) {
+static uint8_t showNextPattern(led_stripe_t *stripe) {
 	led_pattern_t nextPattern = { };
+	static uint16_t oldNumberOfLEDs = 0;
 	uint8_t chk = EXIT_SUCCESS;
 
-	chk = popQueueElement(queue, &nextPattern);
+	chk = popQueueElement(stripe->queue, &nextPattern);
 	if (chk == EXIT_FAILURE) {
 		debug_log("queue is empty, nothing to display ...");
 		return EXIT_FAILURE;
 	}
 
 	if (nextPattern.duration_ms > 0) {
-		startTimer(timer, nextPattern.duration_ms);
+		startTimer(stripe->timer, nextPattern.duration_ms);
 	}
 
 	debug_log("showing next pattern with duration %d and #%d leds now.",
 			nextPattern.duration_ms, nextPattern.led_num);
-	showLEDs(nextPattern.led_colors, nextPattern.led_num, busNum); //TODO: bus number must be generated dynamically
-
+	clearLEDs(oldNumberOfLEDs, stripe->spi_bus);
+	showLEDs(nextPattern.led_colors, nextPattern.led_num, stripe->spi_bus);
+	oldNumberOfLEDs = nextPattern.led_num;
+	free(nextPattern.led_colors);
 	return chk;
 }
 
@@ -182,32 +181,32 @@ static void testRoutine() {
 	led_pattern_t patterns[3] = { 0 };
 
 	patterns[0].led_num = 3;
-	patterns[0].duration_ms = 1200;
+	patterns[0].duration_ms = 1000;
 	patterns[0].direction = 0; // can be ignored anyway
 	patterns[0].led_colors = malloc(
 			patterns[0].led_num * sizeof(led_rgb_color_t));
 	memcpy(patterns[0].led_colors, led,
 			patterns[0].led_num * sizeof(led_rgb_color_t));
-	pushQueueElement(&Bus2_LEDStripeQueue, &patterns[0]);
+	pushQueueElement(Bus2_LEDStripe.queue, &patterns[0]);
 
 	patterns[1].led_num = 3;
-	patterns[1].duration_ms = 800;
+	patterns[1].duration_ms = 1000;
 	patterns[1].direction = 1; // can be ignored anyway
 	patterns[1].led_colors = malloc(
 			patterns[1].led_num * sizeof(led_rgb_color_t));
-	memcpy(patterns[1].led_colors, &led[patterns[1].led_num],
+	memcpy(patterns[1].led_colors, &led[patterns[0].led_num],
 			patterns[1].led_num * sizeof(led_rgb_color_t));
-	pushQueueElement(&Bus2_LEDStripeQueue, &patterns[1]);
+	pushQueueElement(Bus2_LEDStripe.queue, &patterns[1]);
 
 	patterns[2].led_num = 3;
-	patterns[2].duration_ms = 3500;
+	patterns[2].duration_ms = 1000;
 	patterns[2].direction = 0; // can be ignored anyway
 	patterns[2].led_colors = malloc(
 			patterns[2].led_num * sizeof(led_rgb_color_t));
 	memcpy(patterns[2].led_colors,
 			&led[patterns[2].led_num + patterns[1].led_num],
 			patterns[2].led_num * sizeof(led_rgb_color_t));
-	pushQueueElement(&Bus2_LEDStripeQueue, &patterns[2]);
+	pushQueueElement(Bus2_LEDStripe.queue, &patterns[2]);
 	debug_log("test routine: pushed 3 elements into pattern queue.");
 }
 
@@ -217,19 +216,24 @@ static void unsetNotification(uint32_t notification) {
 
 void runScheduler() {
 	testRoutine();
-	showNextPattern(&Bus2_LEDStripeQueue, bus2_timer, bus_2);
+	showNextPattern(&Bus1_LEDStripe);
+	showNextPattern(&Bus2_LEDStripe);
 	while (1) {
 		if (notif & LED_BUS1_NOTIF) {
-			debug_log("Received LED_BUS1_NOTIF");
-			showNextPattern(&Bus1_LEDStripeQueue, bus1_timer, bus_1);
+			showNextPattern(&Bus1_LEDStripe);
 			unsetNotification(LED_BUS1_NOTIF);
 		}
 		if (notif & LED_BUS2_NOTIF) {
-			debug_log("Received LED_BUS2_NOTIF");
-			showNextPattern(&Bus2_LEDStripeQueue, bus2_timer, bus_2);
+			static uint8_t testCnt = 0;
+			testCnt++;
+			if (testCnt == 3) {
+				testRoutine();
+				testCnt = 0;
+			}
+
+			showNextPattern(&Bus2_LEDStripe);
 			unsetNotification(LED_BUS2_NOTIF);
-			//TODO: delete this
-			testRoutine();
+
 		}
 	}
 }

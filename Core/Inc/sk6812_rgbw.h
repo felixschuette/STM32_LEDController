@@ -11,8 +11,8 @@
 #include "stm32f1xx_hal.h"
 
 #define SINGLE_LED_FRAME_SIZE		(32)
-#define START_OFFSET				(60)
-#define RESET_TIME					(60)
+#define START_OFFSET				(80)
+#define RESET_TIME					(80)
 #define LED_STREAM_LENGTH(LED_NUM)  (START_OFFSET +(SINGLE_LED_FRAME_SIZE*LED_NUM) + RESET_TIME)
 
 DMA_HandleTypeDef hdma;
