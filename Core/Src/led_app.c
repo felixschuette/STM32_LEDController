@@ -134,7 +134,6 @@ static uint8_t pushAnimationPatternInQueue(led_stripe_t *stripe) {
 
 static uint8_t showNextPattern(led_stripe_t *stripe) {
 	led_pattern_t nextPattern = { };
-	static uint16_t oldNumberOfLEDs = 0;
 	uint8_t chk = EXIT_SUCCESS;
 
 	pushAnimationPatternInQueue(stripe);
@@ -151,13 +150,7 @@ static uint8_t showNextPattern(led_stripe_t *stripe) {
 
 	debug_log("showing next pattern with duration %d and #%d leds n ow.",
 			nextPattern.duration_ms, nextPattern.led_num);
-	if (oldNumberOfLEDs > 0) {
-		clearLEDs(oldNumberOfLEDs, stripe->spi_bus);
-	}
-	if (oldNumberOfLEDs > 0)
-		clearLEDs(oldNumberOfLEDs, stripe->spi_bus);
 	showLEDs(nextPattern.led_colors, nextPattern.led_num, stripe->spi_bus);
-	oldNumberOfLEDs = nextPattern.led_num;
 	free(nextPattern.led_colors);
 	return chk;
 }
@@ -191,7 +184,7 @@ static void unsetNotification(uint32_t notification) {
 	notif &= (uint32_t) (~notification);
 }
 
-void runScheduler() {
+void runLEDScheduler() {
 	while (1) {
 		if (notif & LED_BUS1_NOTIF) {
 			debug_log("LED_BUS1_NOTIF");
@@ -205,4 +198,3 @@ void runScheduler() {
 		}
 	}
 }
-

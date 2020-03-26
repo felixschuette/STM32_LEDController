@@ -60,6 +60,8 @@ void initializeLEDApplication(TIM_HandleTypeDef *htim1,
 
 void startAnimating(led_stripe_t *stripe, led_pattern_t *pattern);
 
-void runScheduler();
+void stopAnimating(led_stripe_t *stripe);
+
+void runLEDScheduler();
 
 #endif /* SRC_LED_APP_H_ */
