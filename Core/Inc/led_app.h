@@ -27,7 +27,7 @@ typedef struct {
 	uint16_t led_num;
 	uint8_t direction; //  0 .-> up, 1 -> down
 	uint16_t duration_ms; // if set to zero, no timer will be set
-}led_pattern_t;
+} led_pattern_t;
 
 typedef struct {
 	led_pattern_t led_pattern;
@@ -45,12 +45,21 @@ typedef struct {
 	led_pattern_queue_t *queue;
 	bool is_animating;
 	bool is_timer_active;
+	led_pattern_t animation_pattern;
 } led_stripe_t;
 
-void initializeLEDApplication(TIM_HandleTypeDef *htim1, TIM_HandleTypeDef *htim2);
+typedef enum {
+	animation_upwards = 0, animation_downwards = 1
+} animation_direction_t;
+
+led_stripe_t Bus1_LEDStripe;
+led_stripe_t Bus2_LEDStripe;
+
+void initializeLEDApplication(TIM_HandleTypeDef *htim1,
+		TIM_HandleTypeDef *htim2);
+
+void startAnimating(led_stripe_t *stripe, led_pattern_t *pattern);
 
 void runScheduler();
-
-void test_run();
 
 #endif /* SRC_LED_APP_H_ */
