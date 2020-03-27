@@ -10,6 +10,6 @@
 
 #include "led_app.h"
 
-void testRoutine(led_pattern_queue_t *queue);
+void testRoutine(led_stripe_t *stripe);
 
 #endif /* INC_LED_TEST_H_ */
