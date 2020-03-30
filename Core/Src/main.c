@@ -111,7 +111,7 @@ int main(void) {
 	initializeSPIAdapter(&hspi1, &hspi2);
 	initializeLEDApplication(&htim2, &htim3);
 	debug_log("Initialization done.");
-	testRoutine(&Bus2_LEDStripe, 320);
+	testRoutine(&Bus2_LEDStripe, 300);
 	//testRoutine(&Bus1_LEDStripe, 50);
 	/* USER CODE END 2 */
 

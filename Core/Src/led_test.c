@@ -11,17 +11,17 @@ void testRoutine(led_stripe_t *stripe, uint16_t led_num) {
 
 	led_rgb_color_t *led = malloc(sizeof(led_rgb_color_t) * led_num);
 
-	led[0].red = 50;
-	led[0].green = 50;
+	led[0].red = 0;
+	led[0].green = 0;
 	led[0].blue = 50;
-	led[0].white = 50;
-	led[0].type = led_rgbw;
+	led[0].white = 0;
+	led[0].type = led_rgb;
 
-	led[1].red = 0;
-	led[1].green = 0;
+	led[1].red = 5;
+	led[1].green = 5;
 	led[1].blue = 5;
 	led[1].white = 5;
-	led[1].type = led_rgbw;
+	led[1].type = led_rgb;
 
 	for (int i = 2; i < led_num; i++) {
 		memcpy(&led[i], &led[1], sizeof(led_rgb_color_t));
