@@ -10,6 +10,6 @@
 
 #include "led_app.h"
 
-void testRoutine(led_stripe_t *stripe);
+void testRoutine(led_stripe_t *stripe, uint16_t led_num);
 
 #endif /* INC_LED_TEST_H_ */

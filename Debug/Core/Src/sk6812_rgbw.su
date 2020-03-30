@@ -1,7 +1,7 @@
 sk6812_rgbw.c:12:6:initializeSPIAdapter	16	static
 sk6812_rgbw.c:20:13:sendSymbolStreamOnLine	104	static
-sk6812_rgbw.c:35:13:color2Symbol	32	static
-sk6812_rgbw.c:50:13:getColorSymbolStream	24	static
-sk6812_rgbw.c:62:13:buildSymbolStream	32	static
-sk6812_rgbw.c:75:6:clearLEDs	24	static
-sk6812_rgbw.c:83:6:showLEDs	24	static
+sk6812_rgbw.c:34:13:color2Symbol	32	static
+sk6812_rgbw.c:49:13:getColorSymbolStream	24	static
+sk6812_rgbw.c:63:13:buildSymbolStream	32	static
+sk6812_rgbw.c:76:6:clearLEDs	24	static
+sk6812_rgbw.c:84:6:showLEDs	24	static

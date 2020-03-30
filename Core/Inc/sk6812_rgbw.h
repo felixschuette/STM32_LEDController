@@ -29,6 +29,7 @@ typedef struct{
 	uint8_t green;
 	uint8_t blue;
 	uint8_t white;
+	led_type_t type;
 }led_rgb_color_t;
 
 typedef enum {

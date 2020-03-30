@@ -29,7 +29,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../USB_DEVICE/App/usb_device.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  ../USB_DEVICE/Target/usbd_conf.h ../Core/Inc/led_app.h \
- ../Core/Inc/sk6812_rgbw.h ../Core/Inc/debug_log.h
+ ../Core/Inc/sk6812_rgbw.h ../Core/Inc/debug_log.h ../Core/Inc/led_test.h \
+ ../Core/Inc/led_app.h
 
 ../Core/Inc/main.h:
 
@@ -98,3 +99,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/sk6812_rgbw.h:
 
 ../Core/Inc/debug_log.h:
+
+../Core/Inc/led_test.h:
+
+../Core/Inc/led_app.h:

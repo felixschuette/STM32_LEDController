@@ -21,10 +21,9 @@ static void sendSymbolStreamOnLine(uint8_t *symbols, uint16_t length,
 		spi_bus_num_t busNum) {
 	SPI_HandleTypeDef hspi;
 
-	if(busNum == bus_1){
+	if (busNum == bus_1) {
 		hspi = bus1;
-	}
-	else if(busNum == bus_2){
+	} else if (busNum == bus_2) {
 		hspi = bus2;
 	}
 
@@ -55,8 +54,10 @@ static void getColorSymbolStream(led_rgb_color_t *led, uint8_t *symbol_stream) {
 	color2Symbol(led->red, symbol_stream + cursor);
 	cursor += 8;
 	color2Symbol(led->blue, symbol_stream + cursor);
-	cursor += 8;
-	color2Symbol(led->white, symbol_stream + cursor);
+	if (led->type == led_rgbw) {
+		cursor += 8;
+		color2Symbol(led->white, symbol_stream + cursor);
+	}
 }
 
 static void buildSymbolStream(uint8_t **stream, led_rgb_color_t *led,
