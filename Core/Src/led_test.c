@@ -20,5 +20,5 @@ void testRoutine(led_stripe_t *stripe, uint16_t ledNum) {
 	memset(testMsgFrame + LED_COMMAND_HEADER_LENGTH + ledBytesWidth, 0x01, ledNum * ledBytesWidth - ledBytesWidth);
 	uint8_t msgLength = LED_COMMAND_HEADER_LENGTH + ledNum * ledBytesWidth;
 	processUSBCallback(testMsgFrame, (uint32_t *) &msgLength);
-	runLEDScheduler();
+	runLEDApplication();
 }

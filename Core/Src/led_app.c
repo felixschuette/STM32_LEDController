@@ -152,6 +152,9 @@ static uint8_t pushAnimationPatternInQueue(led_stripe_t *stripe) {
 		memcpy(stripe->animation_pattern.led_colors + tmp_pattern.led_num - 1,
 				tmp_pattern.led_colors, sizeof(led_rgb_color_t));
 		break;
+	case no_animation:
+		return EXIT_FAILURE;
+		break;
 	}
 
 	return EXIT_SUCCESS;
@@ -241,7 +244,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	HAL_TIM_Base_Stop(htim);
 }
 
-void runLEDScheduler() {
+void runLEDApplication() {
 	debug_log("LED scheduler started ...");
 	while (1) {
 		if (notif & LED_BUS1_NOTIF) {

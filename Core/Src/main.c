@@ -112,7 +112,9 @@ int main(void) {
 	initializeSPIAdapter(&hspi1, &hspi2);
 	initializeLEDApplication(&htim2, &htim3);
 	debug_log("Initialization done.");
+#ifdef TEST_ACTIVE
 	testRoutine(&Bus2_LEDStripe, 15);
+#endif
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -121,7 +123,7 @@ int main(void) {
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		runLEDScheduler();
+		runLEDApplication();
 	}
 	/* USER CODE END 3 */
 }
