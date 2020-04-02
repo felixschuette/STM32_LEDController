@@ -22,10 +22,10 @@ The _LED Command_ can be used to trigger the MCU to show specific color patterns
 * LED_NUM:  indicates the number of LEDs to be controlled.
 * LED_TYPE: indicates whether the attached LEDs are of type RGB or RGBW. Thereby, "0x00" corresponds to RGB and "0x01" to RGBW, respectively.
 * ANI_DIR: specifies the direction of animation. If set to "0x00", no animation is performed. "0x01" corresponds to an animation in upward direction and "0x002" in downward direction.
-* DURATION: specifies the time span in miliseconds in which the pattern should be displayed. 
-* BUS_NUM: indicates by which stripe the given pattern is to be shown. 
+* DURATION: specifies the time span in milliseconds in which the pattern should be displayed. 
+* BUS_NUM: indicates by which stripe (0x00, or 0x01) the given pattern is to be shown. 
 
-After the 8 byte header, the corresponding LED pattern consiting of a series of LED colors follows. Depending on whether the _LED_TYPE_ was set to RGB or RGBW, each LED color consists of 3 or 4 bytes, respectively:
+Note that all bytes are formatted MSB. After the 8 byte header, the corresponding LED pattern consisting of a series of LED colors follows. Depending on whether the _LED_TYPE_ was set to RGB or RGBW, each LED color consists of 3 or 4 bytes, respectively:
 <table class="tg">
   <tr>
     <th class="tg-0pky" colspan="4">LED #1 Color</th>

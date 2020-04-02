@@ -36,6 +36,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#include "usbd_cdc_if.h"
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -51,7 +52,7 @@ DMA_HandleTypeDef hdma_spi2_tx;
 
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
-USBD_HandleTypeDef hUsbDeviceFS;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -77,17 +78,7 @@ static void MX_TIM3_Init(void);
  */
 int main(void) {
 	/* USER CODE BEGIN 1 */
-	struct mouseHID_t {
-		uint8_t buttons;
-		int8_t x;
-		int8_t y;
-		int8_t wheel;
-	};
-	struct mouseHID_t mouseHID;
-	mouseHID.buttons = 0;
-	mouseHID.x = 10;
-	mouseHID.y = 0;
-	mouseHID.wheel = 0;
+
 	/* USER CODE END 1 */
 
 	/* MCU Configuration--------------------------------------------------------*/
@@ -113,7 +104,7 @@ int main(void) {
 	MX_SPI1_Init();
 	MX_TIM2_Init();
 	MX_TIM3_Init();
-	MX_USB_DEVICE_Init(&hUsbDeviceFS);
+	MX_USB_DEVICE_Init();
 	/* USER CODE BEGIN 2 */
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 	HAL_Delay(1000);
@@ -121,6 +112,7 @@ int main(void) {
 	initializeSPIAdapter(&hspi1, &hspi2);
 	initializeLEDApplication(&htim2, &htim3);
 	debug_log("Initialization done.");
+	testRoutine(&Bus2_LEDStripe, 15);
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -129,11 +121,7 @@ int main(void) {
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		mouseHID.x = 10;
-		USBD_HID_SendReport(&hUsbDeviceFS, &mouseHID,
-				sizeof(struct mouseHID_t));
-		HAL_Delay(1000);
-
+		runLEDScheduler();
 	}
 	/* USER CODE END 3 */
 }

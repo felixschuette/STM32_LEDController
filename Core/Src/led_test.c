@@ -5,35 +5,20 @@
  *      Author: felix
  */
 #include "led_test.h"
+#include "usb_packet.h"
 
-void testRoutine(led_stripe_t *stripe, uint16_t led_num) {
+uint8_t test_msg_frame_header[] = {0x00, 0x00, 0x0F, 0x01, 0x00, 0x01, 0xf4, 0x01};
+
+uint8_t firstLED[4] = {0xFF, 0x00, 0x00, 0x00};
+
+void testRoutine(led_stripe_t *stripe, uint16_t ledNum) {
 	debug_log("starting test routine ...");
-
-	led_rgb_color_t *led = malloc(sizeof(led_rgb_color_t) * led_num);
-
-	led[0].red = 0;
-	led[0].green = 0;
-	led[0].blue = 50;
-	led[0].white = 0;
-	led[0].type = led_rgb;
-
-	led[1].red = 5;
-	led[1].green = 5;
-	led[1].blue = 5;
-	led[1].white = 5;
-	led[1].type = led_rgb;
-
-	for (int i = 2; i < led_num; i++) {
-		memcpy(&led[i], &led[1], sizeof(led_rgb_color_t));
-	}
-
-	led_pattern_t patterns = { 0 };
-
-	patterns.led_num = led_num;
-	patterns.duration_ms = 20;
-	patterns.direction = 0; // can be ignored anyway
-	patterns.led_colors = malloc(patterns.led_num * sizeof(led_rgb_color_t));
-	memcpy(patterns.led_colors, led,
-			patterns.led_num * sizeof(led_rgb_color_t));
-	startAnimating(stripe, &patterns);
+	uint16_t ledBytesWidth = LED_BYTE_WIDTH(1);
+	uint8_t *testMsgFrame = malloc((LED_COMMAND_HEADER_LENGTH + ledNum * ledBytesWidth));
+	memcpy(testMsgFrame, &test_msg_frame_header, LED_COMMAND_HEADER_LENGTH);
+	memcpy(testMsgFrame + LED_COMMAND_HEADER_LENGTH, firstLED, ledBytesWidth);
+	memset(testMsgFrame + LED_COMMAND_HEADER_LENGTH + ledBytesWidth, 0x01, ledNum * ledBytesWidth - ledBytesWidth);
+	uint8_t msgLength = LED_COMMAND_HEADER_LENGTH + ledNum * ledBytesWidth;
+	processUSBCallback(testMsgFrame, (uint32_t *) &msgLength);
+	runLEDScheduler();
 }

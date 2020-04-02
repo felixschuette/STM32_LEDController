@@ -15,6 +15,7 @@
 #include "stdio.h"
 #include "stdbool.h"
 #include "debug_log.h"
+#include "usb_packet.h"
 
 #define LED_BUS1_NOTIF					(1 << 0)
 #define LED_BUS2_NOTIF					(1 << 1)
@@ -25,7 +26,7 @@
 typedef struct {
 	led_rgb_color_t *led_colors;
 	uint16_t led_num;
-	uint8_t direction; //  0 .-> up, 1 -> down
+	uint8_t direction;
 	uint16_t duration_ms; // if set to zero, no timer will be set
 } led_pattern_t;
 
@@ -46,10 +47,13 @@ typedef struct {
 	bool is_animating;
 	bool is_timer_active;
 	led_pattern_t animation_pattern;
+	uint32_t notification;
 } led_stripe_t;
 
 typedef enum {
-	animation_upwards = 0, animation_downwards = 1
+	no_animation = 0,
+	animation_upwards = 1,
+	animation_downwards = 2
 } animation_direction_t;
 
 led_stripe_t Bus1_LEDStripe;
@@ -61,6 +65,8 @@ void initializeLEDApplication(TIM_HandleTypeDef *htim1,
 void startAnimating(led_stripe_t *stripe, led_pattern_t *pattern);
 
 void stopAnimating(led_stripe_t *stripe);
+
+void appendLEDCommandToQueue();
 
 void runLEDScheduler();
 
