@@ -113,6 +113,12 @@ static void startTimer(TIM_HandleTypeDef *timer, uint32_t duration_ms) {
 	HAL_TIM_Base_Start_IT(timer);
 }
 
+static void stopTimer(led_stripe_t *stripe){
+	debug_log("stopping timer of stripe #%d", stripe->spi_bus + 1);
+	HAL_TIM_Base_Stop_IT(stripe->timer);
+	stripe->is_timer_active = false;
+}
+
 static uint8_t pushAnimationPatternInQueue(led_stripe_t *stripe) {
 
 	if (stripe->is_animating == false) {
@@ -182,11 +188,11 @@ void startAnimating(led_stripe_t *stripe, led_pattern_t *pattern) {
 }
 
 void stopAnimating(led_stripe_t *stripe) {
-	//TODO: Delete what is in queue
 	if (stripe->is_animating) {
+		debug_log("Stopping animation...");
 		clearQueue(stripe);
 		free(stripe->animation_pattern.led_colors);
-		HAL_TIM_Base_Stop_IT(stripe->timer);
+		stopTimer(stripe);
 	}
 	stripe->is_animating = false;
 }
