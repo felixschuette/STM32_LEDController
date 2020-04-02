@@ -26,33 +26,31 @@ The _LED Command_ can be used to trigger the MCU to show specific color patterns
 * BUS_NUM: indicates by which stripe the given pattern is to be shown. 
 
 After the 8 byte header, the corresponding LED pattern consiting of a series of LED colors follows. Depending on whether the _LED_TYPE_ was set to RGB or RGBW, each LED color consists of 3 or 4 bytes, respectively:
-<style type="text/css">
-.tg  {border-collapse:collapse;border-spacing:0;}
-.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
-.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
-.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
-.tg .tg-0lax{text-align:left;vertical-align:top}
-</style>
 <table class="tg">
   <tr>
-    <th class="tg-0pky" colspan="3">LED #1 Color</th>
-    <th class="tg-0pky" colspan="3">LED # 2 Color</th>
+    <th class="tg-0pky" colspan="4">LED #1 Color</th>
+    <th class="tg-0pky" colspan="4">LED # 2 Color</th>
     <th class="tg-0pky">...</th>
-    <th class="tg-0pky" colspan="3">LED #n Color</th>
+    <th class="tg-0pky" colspan="4">LED #n Color</th>
   </tr>
   <tr>
     <td class="tg-0pky">RED</td>
     <td class="tg-0pky">GREEN</td>
     <td class="tg-0pky">BLUE</td>
+    <td class="tg-0lax">WHITE</td>
     <td class="tg-0pky">RED</td>
     <td class="tg-0lax">GREEN</td>
     <td class="tg-0lax">BLUE</td>
+    <td class="tg-0lax">WHITE</td>
     <td class="tg-0pky">...</td>
     <td class="tg-0pky">GREEN</td>
     <td class="tg-0lax">BLUE</td>
     <td class="tg-0lax">BLUE</td>
+    <td class="tg-0lax">WHITE</td>
   </tr>
   <tr>
+    <td class="tg-0lax">1 Byte</td>
+    <td class="tg-0lax">1 Byte</td>
     <td class="tg-0lax">1 Byte</td>
     <td class="tg-0lax">1 Byte</td>
     <td class="tg-0lax">1 Byte</td>
@@ -60,6 +58,7 @@ After the 8 byte header, the corresponding LED pattern consiting of a series of 
     <td class="tg-0lax">1 Byte</td>
     <td class="tg-0lax">1 Byte</td>
     <td class="tg-0lax">...</td>
+    <td class="tg-0lax">1 Byte</td>
     <td class="tg-0lax">1 Byte</td>
     <td class="tg-0lax">1 Byte</td>
     <td class="tg-0lax">1 Byte</td>
