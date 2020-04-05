@@ -21,6 +21,7 @@ void USB_initRxConfig() {
 }
 
 static void resetRxConfig() {
+	debug_log("Resetting config...");
 	free(USB_rxConfig.buf);
 	USB_initRxConfig();
 }
@@ -37,9 +38,6 @@ static bool isHeaderValid(uint8_t *buf, uint32_t len) {
 			break;
 		}
 		// TODO: we could do some more validity checks here
-	default:
-		debug_log("ERROR: invalid header type");
-		chk = false;
 	}
 	return chk;
 }
@@ -47,15 +45,16 @@ static bool isHeaderValid(uint8_t *buf, uint32_t len) {
 static void setLEDCmdRxCfg(uint8_t *buf, uint32_t len) {
 	USB_rxConfig.state = receiving;
 	USB_rxConfig.packet_type = led_cmd;
-	USB_rxConfig.num_packets = buf[1]; // TODO
-	USB_rxConfig.packet_size = buf[2]; // TODO
+	USB_rxConfig.num_packets = buf[1];
+	USB_rxConfig.packet_size = buf[2];
 	USB_rxConfig.packets_cnt = 0;
 	USB_rxConfig.last_receiption = HAL_GetTick();
 	USB_rxConfig.buf_length = len
 			+ (USB_rxConfig.packet_size * USB_rxConfig.num_packets);
-	USB_rxConfig.buf = malloc(USB_rxConfig.buf_length); // TODO free me
+	USB_rxConfig.buf = malloc(USB_rxConfig.buf_length);
 	USB_rxConfig.buf_cnt = len;
 	memcpy(USB_rxConfig.buf, buf, len);
+	USB_rxConfig.application_cb = handleLEDCommandToApplication;
 	debug_log("Initialized LED command RX config ...");
 }
 
@@ -79,7 +78,7 @@ static uint8_t setRxConfig(uint8_t *buf, uint32_t len) {
 	return chk;
 }
 
-static bool isPacketTimeout() {
+static bool isPacketTimedOut() {
 	uint32_t current_time = HAL_GetTick();
 
 	if ((current_time - USB_rxConfig.last_receiption) > USB_PACKET_TIMEOUT) {
@@ -89,46 +88,61 @@ static bool isPacketTimeout() {
 	return false;
 }
 
-static bool isPacketValid(uint8_t *buf, uint32_t len) {
-
+static bool isPacketSizeValid(uint32_t len){
+	if(len > USB_rxConfig.packet_size){
+		debug_log("ERROR: packet size exceeded!");
+		return false;
+	}
+	if((len < USB_rxConfig.packet_size) && (USB_rxConfig.packets_cnt + 1 < USB_rxConfig.num_packets)){
+		debug_log("ERROR: packet size is too small");
+		return false;
+	}
 	return true;
 }
 
 static uint8_t processNextPacket(uint8_t *buf, uint32_t len) {
-	if (!isPacketValid(buf, len)) {
+	debug_log("processing next packet...");
+	if (!isPacketSizeValid(len)) {
 		resetRxConfig();
 		return EXIT_FAILURE;
 	}
 
+	memcpy(USB_rxConfig.buf + USB_rxConfig.buf_cnt, buf, len);
+	USB_rxConfig.buf_cnt += len;
+	USB_rxConfig.packets_cnt ++;
 	return EXIT_SUCCESS;
 }
 
 void USB_packetRxCallback(uint8_t *buf, uint32_t *len) {
 	/* transmitting back the received message */
-	CDC_Transmit_FS(buf, *len);
+	// CDC_Transmit_FS(buf, *len);
 	uint8_t chk = EXIT_FAILURE;
 	bool time_out = false;
 
 	switch (USB_rxConfig.state) {
 	case idle:
 		chk = setRxConfig(buf, *len);
-		assert(chk == EXIT_SUCCESS);
 		break;
 	case receiving:
-		if(isPacketTimeout()){
-			debug_log("ERROR: packet receive time-out.");
+		if(isPacketTimedOut()){
 			time_out = true;
 			break;
 		}
 		chk = processNextPacket(buf, *len);
-		assert(chk == EXIT_SUCCESS);
-		break;
-	default:
+		if(chk == EXIT_FAILURE){
+			break;
+		}
+		if(USB_rxConfig.num_packets == USB_rxConfig.packets_cnt){
+			debug_log("Transmission completed, handling packet to application...");
+			USB_rxConfig.application_cb(USB_rxConfig.buf, USB_rxConfig.buf_length);
+			resetRxConfig();
+		}
 		break;
 	}
 
 	if(time_out){
-		debug_log("Trying to receive packet again as msg header.");
+		debug_log("ERROR: packet receive time exceeded!");
+		debug_log("Trying to receive packet again as msg header...");
 		USB_packetRxCallback(buf, len);
 	}
 }

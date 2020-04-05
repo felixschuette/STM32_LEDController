@@ -200,7 +200,7 @@ void stopAnimating(led_stripe_t *stripe) {
 	stripe->is_animating = false;
 }
 
-void appendLEDCommandToQueue(led_cmd_t *cmd) {
+static void appendLEDCommandToQueue(led_cmd_t *cmd) {
 	debug_log("Appending cmd to msg queue");
 	led_stripe_t *stripe = NULL;
 	led_pattern_t pat;
@@ -231,11 +231,7 @@ void appendLEDCommandToQueue(led_cmd_t *cmd) {
 	}
 }
 
-static uint8_t handleLEDCommandToApplication(uint8_t *buf, uint32_t *len) {
-	if (*len < LED_COMMAND_HEADER_LENGTH) {
-		return EXIT_FAILURE;
-	}
-
+uint8_t handleLEDCommandToApplication(uint8_t *buf, uint32_t len) {
 	led_cmd_t cmd = { 0 };
 	cmd.led_num = buf[3] << 8 | buf[4];
 	cmd.led_type = buf[5];
@@ -244,7 +240,7 @@ static uint8_t handleLEDCommandToApplication(uint8_t *buf, uint32_t *len) {
 	cmd.bus_num = buf[9];
 	uint16_t ledByteWidth = LED_BYTE_WIDTH(cmd.led_type);
 
-	if (cmd.led_num * ledByteWidth != (*len - LED_COMMAND_HEADER_LENGTH)) {
+	if (cmd.led_num * ledByteWidth != (len - LED_COMMAND_HEADER_LENGTH)) {
 		EXIT_FAILURE;
 	}
 

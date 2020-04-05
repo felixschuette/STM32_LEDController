@@ -56,6 +56,15 @@ typedef struct {
 	uint32_t notification;
 } led_stripe_t;
 
+typedef struct {
+	uint16_t led_num;
+	uint8_t led_type;
+	uint8_t ani_dir;
+	uint16_t duration_ms;
+	uint8_t bus_num;
+	led_rgb_color_t *led_colors;
+} led_cmd_t;
+
 led_stripe_t Bus1_LEDStripe;
 led_stripe_t Bus2_LEDStripe;
 
@@ -66,7 +75,7 @@ void startAnimating(led_stripe_t *stripe, led_pattern_t *pattern);
 
 void stopAnimating(led_stripe_t *stripe);
 
-void appendLEDCommandToQueue();
+uint8_t handleLEDCommandToApplication(uint8_t *buf, uint32_t len);
 
 void runLEDApplication();
 
