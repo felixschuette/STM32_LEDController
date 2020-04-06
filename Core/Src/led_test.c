@@ -10,7 +10,6 @@
 void testRoutine(led_stripe_t *stripe, uint16_t ledNum) {
 	debug_log("starting test routine ...");
 	uint8_t test_header[] = { 0, 4, 60, 0, 51, 1, 0, 0, 200, 1 };
-	uint8_t test_header_wrong[] = { 0, 4, 60, 0, 51, 1, 0, 0, 200, 1 };
 	uint8_t test_frame_1[] = { 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0,
 			1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1,
 			0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0 };
@@ -34,7 +33,7 @@ void testRoutine(led_stripe_t *stripe, uint16_t ledNum) {
 	HAL_Delay(50);
 	USB_packetRxCallback(test_frame_3, &normal_frame_length);
 	HAL_Delay(50);
-	USB_packetRxCallback(test_frame_4, &normal_frame_length);
+	USB_packetRxCallback(test_frame_4, &last_frame_length);
 	HAL_Delay(50);
 	runLEDApplication();
 }
