@@ -113,6 +113,7 @@ int main(void) {
 	initializeSPIAdapter(&hspi1, &hspi2);
 	initializeLEDApplication(&htim2, &htim3);
 	debug_log("Initialization done.");
+#define TEST_ACTIVE
 #ifdef TEST_ACTIVE
 	testRoutine(&Bus2_LEDStripe, 15);
 #endif

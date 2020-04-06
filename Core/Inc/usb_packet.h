@@ -16,7 +16,7 @@
 #include "usbd_cdc_if.h"
 
 
-#define USB_PACKET_TIMEOUT					(3000)
+#define USB_PACKET_TIMEOUT					(1000)
 #define LED_COMMAND_HEADER_LENGTH			(0x0A)
 #define LED_BYTE_WIDTH(LED_TYPE)			(3 + LED_TYPE)
 
@@ -34,7 +34,7 @@ typedef struct {
 	uint16_t num_packets;
 	uint16_t packet_size;
 	uint16_t packets_cnt;
-	uint32_t last_receiption;
+	uint32_t last_reception;
 	uint8_t *buf;
 	uint32_t buf_length;
 	uint32_t buf_cnt;
