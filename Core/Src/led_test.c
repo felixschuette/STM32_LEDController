@@ -5,35 +5,35 @@
  *      Author: felix
  */
 #include "led_test.h"
+#include "usb_packet.h"
 
-void testRoutine(led_stripe_t *stripe, uint16_t led_num) {
+void testRoutine(led_stripe_t *stripe, uint16_t ledNum) {
 	debug_log("starting test routine ...");
+	uint8_t test_header[] = { 0, 4, 60, 0, 51, 1, 0, 0, 200, 1 };
+	uint8_t test_frame_1[] = { 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0,
+			1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1,
+			0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0 };
+	uint8_t test_frame_2[] = { 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0,
+			1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1,
+			0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0 };
+	uint8_t test_frame_3[] = { 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0,
+			1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1,
+			0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0 };
+	uint8_t test_frame_4[] = { 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0,
+			1, 1, 1, 0, 3, 3, 3, 3 };
 
-	led_rgb_color_t *led = malloc(sizeof(led_rgb_color_t) * led_num);
-
-	led[0].red = 0;
-	led[0].green = 0;
-	led[0].blue = 50;
-	led[0].white = 0;
-	led[0].type = led_rgb;
-
-	led[1].red = 5;
-	led[1].green = 5;
-	led[1].blue = 5;
-	led[1].white = 5;
-	led[1].type = led_rgb;
-
-	for (int i = 2; i < led_num; i++) {
-		memcpy(&led[i], &led[1], sizeof(led_rgb_color_t));
-	}
-
-	led_pattern_t patterns = { 0 };
-
-	patterns.led_num = led_num;
-	patterns.duration_ms = 20;
-	patterns.direction = 0; // can be ignored anyway
-	patterns.led_colors = malloc(patterns.led_num * sizeof(led_rgb_color_t));
-	memcpy(patterns.led_colors, led,
-			patterns.led_num * sizeof(led_rgb_color_t));
-	startAnimating(stripe, &patterns);
+	uint32_t header_length = sizeof(test_header);
+	uint32_t normal_frame_length = sizeof(test_frame_1);
+	uint32_t last_frame_length = sizeof(test_frame_4);
+	USB_packetRxCallback(test_header, &header_length);
+	HAL_Delay(50);
+	USB_packetRxCallback(test_frame_1, &normal_frame_length);
+	HAL_Delay(50);
+	USB_packetRxCallback(test_frame_2, &normal_frame_length);
+	HAL_Delay(50);
+	USB_packetRxCallback(test_frame_3, &normal_frame_length);
+	HAL_Delay(50);
+	USB_packetRxCallback(test_frame_4, &last_frame_length);
+	HAL_Delay(50);
+	runLEDApplication();
 }

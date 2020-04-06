@@ -36,6 +36,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#include "usbd_cdc_if.h"
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -77,6 +78,7 @@ static void MX_TIM3_Init(void);
  */
 int main(void) {
 	/* USER CODE BEGIN 1 */
+
 	/* USER CODE END 1 */
 
 	/* MCU Configuration--------------------------------------------------------*/
@@ -93,7 +95,6 @@ int main(void) {
 
 	/* USER CODE BEGIN SysInit */
 	debug_log("Q-loud LED Controller v1.0");
-	//debug_log("");
 	/* USER CODE END SysInit */
 
 	/* Initialize all configured peripherals */
@@ -108,11 +109,14 @@ int main(void) {
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 	HAL_Delay(1000);
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+	USB_initRxConfig();
 	initializeSPIAdapter(&hspi1, &hspi2);
 	initializeLEDApplication(&htim2, &htim3);
 	debug_log("Initialization done.");
-	testRoutine(&Bus2_LEDStripe, 300);
-	//testRoutine(&Bus1_LEDStripe, 50);
+#define TEST_ACTIVE
+#ifdef TEST_ACTIVE
+	testRoutine(&Bus2_LEDStripe, 15);
+#endif
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -121,8 +125,7 @@ int main(void) {
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		runLEDScheduler();
-
+		runLEDApplication();
 	}
 	/* USER CODE END 3 */
 }

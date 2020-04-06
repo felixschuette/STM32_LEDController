@@ -20,8 +20,8 @@ SPI_HandleTypeDef bus1;
 SPI_HandleTypeDef bus2;
 
 typedef enum {
-	led_rgbw,
-	led_rgb
+	led_rgb = 0,
+	led_rgbw = 1
 } led_type_t;
 
 typedef struct{
