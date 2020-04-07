@@ -37,3 +37,14 @@ void testRoutine(led_stripe_t *stripe, uint16_t ledNum) {
 	HAL_Delay(50);
 	runLEDApplication();
 }
+
+void testTimer(TIM_HandleTypeDef *htim, GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin) {
+	debug_log("starting test timer");
+	__HAL_TIM_CLEAR_IT(htim, TIM_IT_UPDATE);
+	uint32_t data = 0;
+	HAL_TIM_Base_Start(htim);
+
+	while (1) {
+		HAL_GPIO_TogglePin(GPIOx, GPIO_Pin);
+	}
+}

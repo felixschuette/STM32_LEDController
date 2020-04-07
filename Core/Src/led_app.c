@@ -256,6 +256,7 @@ uint8_t handleLEDCommandToApplication(uint8_t *buf, uint32_t len) {
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+	debug_log("timer period elapsed");
 	if (htim->Instance == LED_BUS1_TIMER) {
 		debug_log("LED_BUS1_TIMER");
 		Bus1_LEDStripe.is_timer_active = false;
