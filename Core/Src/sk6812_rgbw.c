@@ -57,12 +57,12 @@ static void getColorSymbolStream(led_rgb_color_t *led, uint8_t *symbol_stream) {
 	uint16_t cursor = 0;
 
 	color2Symbol(led->green, symbol_stream + cursor);
-	cursor += 4;
+	cursor += SYMBOL_BYTE_WIDTH;
 	color2Symbol(led->red, symbol_stream + cursor);
-	cursor += 4;
+	cursor += SYMBOL_BYTE_WIDTH;
 	color2Symbol(led->blue, symbol_stream + cursor);
 	if (led->type == led_rgbw) {
-		cursor += 4;
+		cursor += SYMBOL_BYTE_WIDTH;
 		color2Symbol(led->white, symbol_stream + cursor);
 	}
 }
