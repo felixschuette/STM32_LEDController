@@ -5,6 +5,7 @@
  *      Author: felix
  */
 #include "sk6812_rgbw.h"
+#include "debug_log.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -32,15 +33,21 @@ static void sendSymbolStreamOnLine(uint8_t *symbols, uint16_t length,
 }
 
 static void color2Symbol(uint8_t color, uint8_t *symbol_stream) {
-	const uint8_t oneSymbol = 0b11110000;
-	const uint8_t zeroSymbol = 0b11000000;
+	const uint8_t oneOneSymbol = 0b11001100;
+	const uint8_t oneZeroSymbol = 0b11001000;
+	const uint8_t zeroOneSymbol = 0b10001100;
+	const uint8_t zeroZeroSymbol = 0b10001000;
 	uint16_t cursor = 0;
 
-	for (int i = 7; i >= 0; i--) {
-		if (color & (1 << i)) {
-			memcpy(symbol_stream + cursor, &oneSymbol, 1);
-		} else {
-			memcpy(symbol_stream + cursor, &zeroSymbol, 1);
+	for (int i = 7; i >= 0; i-=2) {
+		if ((color & (1 << i)) && (color & (1 << (i - 1)))) {
+			memcpy(symbol_stream + cursor, &oneOneSymbol, 1);
+		} else if ((color & (1 << i)) && !(color & (1 << (i - 1)))) {
+			memcpy(symbol_stream + cursor, &oneZeroSymbol, 1);
+		} else if (!(color & (1 << i)) && (color & (1 << (i - 1)))) {
+			memcpy(symbol_stream + cursor, &zeroOneSymbol, 1);
+		} else if (!(color & (1 << i)) && !(color & (1 << (i - 1)))) {
+			memcpy(symbol_stream + cursor, &zeroZeroSymbol, 1);
 		}
 		cursor++;
 	}
@@ -50,26 +57,26 @@ static void getColorSymbolStream(led_rgb_color_t *led, uint8_t *symbol_stream) {
 	uint16_t cursor = 0;
 
 	color2Symbol(led->green, symbol_stream + cursor);
-	cursor += 8;
+	cursor += 4;
 	color2Symbol(led->red, symbol_stream + cursor);
-	cursor += 8;
+	cursor += 4;
 	color2Symbol(led->blue, symbol_stream + cursor);
 	if (led->type == led_rgbw) {
-		cursor += 8;
+		cursor += 4;
 		color2Symbol(led->white, symbol_stream + cursor);
 	}
 }
 
 static void buildSymbolStream(uint8_t **stream, led_rgb_color_t *led,
 		uint16_t ledNum) {
-	uint16_t stream_length = LED_STREAM_LENGTH(ledNum);
+	uint16_t stream_length = LED_STREAM_LENGTH(ledNum, led->type);
 	uint32_t cursor = START_OFFSET;
 	*stream = malloc(stream_length);
 
 	memset(*stream, 0, stream_length);
 	for (uint16_t i = 0; i < ledNum; i++) {
 		getColorSymbolStream(led + i, (*stream) + cursor);
-		cursor += SINGLE_LED_FRAME_SIZE;
+		cursor += SINGLE_LED_FRAME_SIZE(led->type);
 	}
 }
 
@@ -83,7 +90,7 @@ void clearLEDs(uint16_t ledNum, spi_bus_num_t busNum) {
 
 void showLEDs(led_rgb_color_t *led, uint16_t ledNum, spi_bus_num_t busNum) {
 	uint8_t *symbols_stream = NULL;
-	uint16_t stream_length = LED_STREAM_LENGTH(ledNum);
+	uint16_t stream_length = LED_STREAM_LENGTH(ledNum, led->type);
 
 	buildSymbolStream(&symbols_stream, led, ledNum);
 	sendSymbolStreamOnLine(symbols_stream, stream_length, busNum);
