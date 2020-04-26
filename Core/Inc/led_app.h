@@ -16,9 +16,13 @@
 #include "stdbool.h"
 #include "debug_log.h"
 #include "usb_packet.h"
+#include "led_test.h"
 
 #define LED_BUS1_NOTIF					(1 << 0)
 #define LED_BUS2_NOTIF					(1 << 1)
+#ifdef TEST_ACTIVE
+#define TEST_NOTIF						(1 << 2)
+#endif
 
 #define LED_BUS1_TIMER 			(TIM2)
 #define LED_BUS2_TIMER			(TIM3)

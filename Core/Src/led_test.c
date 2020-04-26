@@ -7,24 +7,87 @@
 #include "led_test.h"
 #include "usb_packet.h"
 
-void testRoutine(led_stripe_t *stripe, uint16_t ledNum) {
-	debug_log("starting test routine ...");
-	uint8_t test_header[] = { 0, 2, 60, 0, 20, 1, 1, 7, 208, 1 };
-	uint8_t test_frame_1[] = { 25, 0, 0, 0, 50, 0, 0, 0, 75, 0, 0, 0, 100, 0, 0,
-			0, 125, 0, 0, 0, 150, 0, 0, 0, 175, 0, 0, 0, 200, 0, 0, 0, 225, 0,
-			0, 0, 250, 0, 0, 0, 250, 25, 0, 0, 250, 50, 0, 0, 250, 75, 0, 0,
-			250, 100, 0, 0, 250, 125, 0, 0 };
-	uint8_t test_frame_2[] = { 250, 150, 0, 0, 250, 175, 0, 0, 250, 200, 0, 0,
-			250, 225, 0, 0, 250, 250, 0, 0 };
+void startTestTimer() {
+	debug_log("starting test timer ...");
+	__HAL_TIM_CLEAR_IT(testTimer, TIM_IT_UPDATE);
+	HAL_TIM_Base_Start_IT(testTimer);
+}
+
+void stopTestTimer() {
+	HAL_TIM_Base_Stop_IT(testTimer);
+}
+
+void initTestTimer(TIM_HandleTypeDef *htim) {
+	testTimer = htim;
+	startTestTimer();
+}
+
+void USB_packetReceive_Test() {
+	debug_log("USB_packetReceive_Test ...");
+
+	uint8_t test_header[] = { 0, 14, 60, 0, 201, 1, 1, 0, 200, 1 };
+	uint8_t frame_1_[] = { 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t frame_2_[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t frame_3_[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t frame_4_[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t frame_5_[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t frame_6_[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t frame_7_[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t frame_8_[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t frame_9_[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t frame_10_[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t frame_11_[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t frame_12_[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t frame_13_[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t frame_14_[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0 };
+
 	uint32_t header_length = sizeof(test_header);
-	uint32_t normal_frame_length = sizeof(test_frame_1);
-	uint32_t last_frame_length = sizeof(test_frame_2);
+	uint32_t normal_frame_length = sizeof(frame_1_);
+	uint32_t last_frame_length = sizeof(frame_14_);
 
 	USB_packetRxCallback(test_header, &header_length);
-	HAL_Delay(50);
-	USB_packetRxCallback(test_frame_1, &normal_frame_length);
-	HAL_Delay(50);
-	USB_packetRxCallback(test_frame_2, &last_frame_length);
-	HAL_Delay(50);
-	runLEDApplication();
+	USB_packetRxCallback(frame_1_, &normal_frame_length);
+	USB_packetRxCallback(frame_2_, &normal_frame_length);
+	USB_packetRxCallback(frame_3_, &normal_frame_length);
+	USB_packetRxCallback(frame_4_, &normal_frame_length);
+	USB_packetRxCallback(frame_5_, &normal_frame_length);
+	USB_packetRxCallback(frame_6_, &normal_frame_length);
+	USB_packetRxCallback(frame_7_, &normal_frame_length);
+	USB_packetRxCallback(frame_8_, &normal_frame_length);
+	USB_packetRxCallback(frame_9_, &normal_frame_length);
+	USB_packetRxCallback(frame_10_, &normal_frame_length);
+	USB_packetRxCallback(frame_11_, &normal_frame_length);
+	USB_packetRxCallback(frame_12_, &normal_frame_length);
+	USB_packetRxCallback(frame_13_, &normal_frame_length);
+	USB_packetRxCallback(frame_14_, &last_frame_length);
+
+	debug_log("Starting timer again");
+	HAL_TIM_Base_Start_IT(testTimer);
 }

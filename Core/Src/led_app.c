@@ -176,7 +176,7 @@ static uint8_t showNextPattern(led_stripe_t *stripe) {
 		startTimer(stripe->timer, nextPattern.duration_ms);
 	}
 
-	debug_log("showing next pattern with duration %d and #%d leds n ow.",
+	debug_log("showing next pattern with duration %d and #%d leds now.",
 			nextPattern.duration_ms, nextPattern.led_num);
 	showLEDs(nextPattern.led_colors, nextPattern.led_num, stripe->spi_bus);
 	free(nextPattern.led_colors);
@@ -259,11 +259,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if (htim->Instance == LED_BUS1_TIMER) {
 		debug_log("LED_BUS1_TIMER");
 		Bus1_LEDStripe.is_timer_active = false;
-		notif |= LED_BUS1_NOTIF;
+		setNotification(LED_BUS1_NOTIF);
 	} else if (htim->Instance == LED_BUS2_TIMER) {
 		debug_log("LED_BUS2_TIMER");
 		Bus2_LEDStripe.is_timer_active = false;
-		notif |= LED_BUS2_NOTIF;
+		setNotification(LED_BUS2_NOTIF);
+	}
+	else if (htim->Instance == TEST_TIMER){
+		debug_log("TEST TIMER");
+		setNotification(TEST_NOTIF);
 	}
 	HAL_TIM_Base_Stop(htim);
 }
@@ -281,5 +285,12 @@ void runLEDApplication() {
 			showNextPattern(&Bus2_LEDStripe);
 			unsetNotification(LED_BUS2_NOTIF);
 		}
+#ifdef TEST_ACTIVE
+		if(notif & TEST_NOTIF){
+			debug_log("TEST NOTIFICATION");
+			USB_packetReceive_Test();
+			unsetNotification(TEST_NOTIF);
+		}
+#endif
 	}
 }

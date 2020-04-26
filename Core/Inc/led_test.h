@@ -11,6 +11,15 @@
 #include "led_app.h"
 #include "usbd_cdc_if.h"
 
-void testRoutine(led_stripe_t *stripe, uint16_t led_num);
+#define TEST_ACTIVE
+
+#ifdef TEST_ACTIVE
+#define TEST_TIMER				(TIM4)
+#endif
+
+TIM_HandleTypeDef *testTimer;
+
+void initTestTimer(TIM_HandleTypeDef *htim);
+void USB_packetReceive_Test();
 
 #endif /* INC_LED_TEST_H_ */
