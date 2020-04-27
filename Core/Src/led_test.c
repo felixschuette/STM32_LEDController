@@ -25,7 +25,7 @@ void initTestTimer(TIM_HandleTypeDef *htim) {
 void USB_packetReceive_Test() {
 	debug_log("USB_packetReceive_Test ...");
 
-	uint8_t test_header[] = { 0, 14, 60, 0, 201, 1, 1, 0, 200, 1 };
+	uint8_t test_header[] = { 0, 14, 60, 0, 201, 1, 0, 0, 20, 1 };
 	uint8_t frame_1_[] = { 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };

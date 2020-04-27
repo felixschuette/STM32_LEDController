@@ -11,7 +11,7 @@
 #include "led_app.h"
 #include "usbd_cdc_if.h"
 
-//#define TEST_ACTIVE
+#define TEST_ACTIVE
 
 #ifdef TEST_ACTIVE
 #define TEST_TIMER				(TIM4)

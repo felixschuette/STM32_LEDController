@@ -55,7 +55,7 @@ static uint8_t popQueueElement(led_pattern_queue_t *queue,
 	} else {
 		queue->head = NULL;
 	}
-	queue->cnt --;
+	queue->cnt--;
 	free(old_head);
 	return EXIT_SUCCESS;
 }
@@ -71,7 +71,7 @@ static uint8_t pushQueueElement(led_pattern_queue_t *queue,
 		new_element->next = NULL;
 		memcpy(&new_element->led_pattern, pattern, sizeof(led_pattern_t));
 		queue->head = new_element;
-		queue->cnt ++;
+		queue->cnt++;
 		return EXIT_SUCCESS;
 	}
 
@@ -85,7 +85,7 @@ static uint8_t pushQueueElement(led_pattern_queue_t *queue,
 		new_element->next = NULL;
 		memcpy(&new_element->led_pattern, pattern, sizeof(led_pattern_t));
 		cursor->next = (struct led_stripe_queue_element_t*) new_element;
-		queue->cnt ++;
+		queue->cnt++;
 		return EXIT_SUCCESS;
 	}
 
@@ -99,7 +99,7 @@ static void clearQueue(led_stripe_t *stripe) {
 	debug_log("Clearing queue of stripe #%d now ...", stripe->spi_bus + 1);
 	while (chk == EXIT_SUCCESS) {
 		chk = popQueueElement(stripe->queue, &pat);
-		if(chk == EXIT_SUCCESS){
+		if (chk == EXIT_SUCCESS) {
 			free(pat.led_colors);
 		}
 	}
@@ -120,7 +120,7 @@ static void startTimer(TIM_HandleTypeDef *timer, uint32_t duration_ms) {
 	HAL_TIM_Base_Start_IT(timer);
 }
 
-static void stopTimer(led_stripe_t *stripe){
+static void stopTimer(led_stripe_t *stripe) {
 	debug_log("stopping timer of stripe #%d", stripe->spi_bus + 1);
 	HAL_TIM_Base_Stop_IT(stripe->timer);
 	stripe->is_timer_active = false;
@@ -251,6 +251,10 @@ uint8_t handleLEDCommandToApplication(uint8_t *buf, uint32_t len) {
 	}
 
 	cmd.led_colors = malloc(cmd.led_num * sizeof(led_rgb_color_t));
+	if (cmd.led_colors == NULL) {
+		debug_log("Error: Failed to allocate memory while storing led_colors from usb command.");
+		return EXIT_FAILURE;
+	}
 	uint16_t cursor = LED_COMMAND_HEADER_LENGTH;
 	for (int i = 0; i < cmd.led_num; i++) {
 		memcpy(&cmd.led_colors[i], &buf[cursor], ledByteWidth);
