@@ -300,7 +300,9 @@ void runLEDApplication() {
 #ifdef TEST_ACTIVE
 		if(notif & TEST_NOTIF){
 			debug_log("TEST NOTIFICATION");
+			debug_log("led patterns in queue: %d", Bus1_LEDStripe.queue->cnt);
 			USB_packetReceive_Test();
+			debug_log("led patterns in queue: %d", Bus1_LEDStripe.queue->cnt);
 			unsetNotification(TEST_NOTIF);
 		}
 #endif
