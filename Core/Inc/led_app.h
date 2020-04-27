@@ -48,6 +48,7 @@ typedef struct {
 typedef struct {
 	led_stripe_queue_element_t *head;
 	led_stripe_queue_element_t *tail;
+	uint16_t cnt;
 } led_pattern_queue_t;
 
 typedef struct {

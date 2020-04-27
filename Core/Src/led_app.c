@@ -25,6 +25,7 @@ void initializeLEDApplication(TIM_HandleTypeDef *htim1,
 	Bus1_LEDStripe.spi_bus = bus_1;
 	Bus1_LEDStripe.queue = malloc(sizeof(led_pattern_queue_t));
 	Bus1_LEDStripe.queue->head = NULL;
+	Bus1_LEDStripe.queue->cnt = 0;
 	Bus1_LEDStripe.is_timer_active = false;
 	Bus1_LEDStripe.notification = LED_BUS1_NOTIF;
 
@@ -33,6 +34,7 @@ void initializeLEDApplication(TIM_HandleTypeDef *htim1,
 	Bus2_LEDStripe.spi_bus = bus_2;
 	Bus2_LEDStripe.queue = malloc(sizeof(led_pattern_queue_t));
 	Bus2_LEDStripe.queue->head = NULL;
+	Bus2_LEDStripe.queue->cnt = 0;
 	Bus2_LEDStripe.is_timer_active = false;
 	Bus2_LEDStripe.notification = LED_BUS2_NOTIF;
 }
@@ -53,7 +55,7 @@ static uint8_t popQueueElement(led_pattern_queue_t *queue,
 	} else {
 		queue->head = NULL;
 	}
-
+	queue->cnt --;
 	free(old_head);
 	return EXIT_SUCCESS;
 }
@@ -69,6 +71,7 @@ static uint8_t pushQueueElement(led_pattern_queue_t *queue,
 		new_element->next = NULL;
 		memcpy(&new_element->led_pattern, pattern, sizeof(led_pattern_t));
 		queue->head = new_element;
+		queue->cnt ++;
 		return EXIT_SUCCESS;
 	}
 
@@ -82,6 +85,7 @@ static uint8_t pushQueueElement(led_pattern_queue_t *queue,
 		new_element->next = NULL;
 		memcpy(&new_element->led_pattern, pattern, sizeof(led_pattern_t));
 		cursor->next = (struct led_stripe_queue_element_t*) new_element;
+		queue->cnt ++;
 		return EXIT_SUCCESS;
 	}
 
@@ -95,6 +99,9 @@ static void clearQueue(led_stripe_t *stripe) {
 	debug_log("Clearing queue of stripe #%d now ...", stripe->spi_bus + 1);
 	while (chk == EXIT_SUCCESS) {
 		chk = popQueueElement(stripe->queue, &pat);
+		if(chk == EXIT_SUCCESS){
+			free(pat.led_colors);
+		}
 	}
 }
 
@@ -218,14 +225,13 @@ static void appendLEDCommandToQueue(led_cmd_t *cmd) {
 
 	stopAnimating(stripe);
 
-	pushQueueElement(stripe->queue, &pat);
-
 	if (cmd->ani_dir != no_animation) {
 		clearQueue(stripe);
 		startAnimating(stripe, &pat);
 	}
 
 	if (stripe->is_timer_active == false) {
+		pushQueueElement(stripe->queue, &pat);
 		debug_log("Timer not active, notifying now.");
 		setNotification(stripe->notification);
 	}
@@ -265,10 +271,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Bus2_LEDStripe.is_timer_active = false;
 		setNotification(LED_BUS2_NOTIF);
 	}
+#ifdef TEST_ACTIVE
 	else if (htim->Instance == TEST_TIMER){
 		debug_log("TEST TIMER");
 		setNotification(TEST_NOTIF);
 	}
+#endif
 	HAL_TIM_Base_Stop(htim);
 }
 

@@ -39,7 +39,7 @@ static void color2Symbol(uint8_t color, uint8_t *symbol_stream) {
 	const uint8_t zeroZeroSymbol = 0b10001000;
 	uint16_t cursor = 0;
 
-	for (int i = 7; i >= 0; i-=2) {
+	for (int i = 7; i >= 0; i -= 2) {
 		if ((color & (1 << i)) && (color & (1 << (i - 1)))) {
 			memcpy(symbol_stream + cursor, &oneOneSymbol, 1);
 		} else if ((color & (1 << i)) && !(color & (1 << (i - 1)))) {
@@ -67,17 +67,23 @@ static void getColorSymbolStream(led_rgb_color_t *led, uint8_t *symbol_stream) {
 	}
 }
 
-static void buildSymbolStream(uint8_t **stream, led_rgb_color_t *led,
+uint8_t buildSymbolStream(uint8_t **stream, led_rgb_color_t *led,
 		uint16_t ledNum) {
 	uint16_t stream_length = LED_STREAM_LENGTH(ledNum, led->type);
 	uint32_t cursor = START_OFFSET;
 	*stream = malloc(stream_length);
+
+	if (*stream == NULL) {
+		debug_log("failed to allocate storage");
+		return EXIT_FAILURE;
+	}
 
 	memset(*stream, 0, stream_length);
 	for (uint16_t i = 0; i < ledNum; i++) {
 		getColorSymbolStream(led + i, (*stream) + cursor);
 		cursor += SINGLE_LED_FRAME_SIZE(led->type);
 	}
+	return EXIT_SUCCESS;
 }
 
 void clearLEDs(uint16_t ledNum, spi_bus_num_t busNum) {
@@ -91,7 +97,13 @@ void clearLEDs(uint16_t ledNum, spi_bus_num_t busNum) {
 void showLEDs(led_rgb_color_t *led, uint16_t ledNum, spi_bus_num_t busNum) {
 	uint8_t *symbols_stream = NULL;
 	uint16_t stream_length = LED_STREAM_LENGTH(ledNum, led->type);
+	uint8_t chk = EXIT_FAILURE;
 
-	buildSymbolStream(&symbols_stream, led, ledNum);
-	sendSymbolStreamOnLine(symbols_stream, stream_length, busNum);
+	chk = buildSymbolStream(&symbols_stream, led, ledNum);
+	if (chk == EXIT_FAILURE) {
+		debug_log("Error! Failed to allocate memory for symbol stream");
+		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+	} else {
+		sendSymbolStreamOnLine(symbols_stream, stream_length, busNum);
+	}
 }
