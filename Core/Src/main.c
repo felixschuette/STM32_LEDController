@@ -115,7 +115,7 @@ int main(void) {
 	USB_initRxConfig();
 	initializeSPIAdapter(&hspi1, &hspi2);
 	initializeLEDApplication(&htim2, &htim3);
-	initializeButtonApp(GPIOB);
+	initializeButtonApp(GPIOB, GPIO_PIN_12);
 	debug_log("Initialization done.");
 #ifdef TEST_ACTIVE
 	initTestTimer(&htim4);

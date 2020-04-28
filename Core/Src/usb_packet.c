@@ -6,6 +6,7 @@
  */
 
 #include "usb_packet.h"
+#include "button_app.h"
 #include "led_app.h"
 
 void USB_initRxConfig() {
@@ -33,15 +34,20 @@ static bool isHeaderValid(uint8_t *buf, uint32_t len) {
 	usb_header_type_id header_type = (usb_header_type_id) buf[0];
 
 	switch (header_type) {
+	// TODO: we could do some more validity checks here
 	case led_cmd:
 		if (len == LED_COMMAND_HEADER_LENGTH) {
 			chk = true;
 			break;
 		}
-		// TODO: we could do some more validity checks here
+	case gpio_req:
+		if (len == GPIO_REQ_HEADER_LENGTH){
+			chk = true;
+			break;
+		}
 	}
 	if (chk == false)
-		debug_log("ERROR: LED command header has invalid length");
+		debug_log("ERROR: header has invalid length");
 	return chk;
 }
 
@@ -69,6 +75,7 @@ static uint8_t setLEDCmdRxCfg(uint8_t *buf, uint32_t len) {
 static uint8_t setRxConfig(uint8_t *buf, uint32_t len) {
 	uint8_t chk = EXIT_FAILURE;
 	usb_header_type_id frame_type = (usb_header_type_id) buf[0];
+	gpio_status_report_t report = {};
 
 	if (!isHeaderValid(buf, len)) {
 		return chk;
@@ -79,6 +86,12 @@ static uint8_t setRxConfig(uint8_t *buf, uint32_t len) {
 	case led_cmd:
 		chk = true;
 		setLEDCmdRxCfg(buf, len);
+		break;
+	case gpio_req:
+		debug_log("Responding to GPIO STATUS REQ now...");
+		report = getGPIOStatusReport();
+		uint16_t len = GPIO_STATUS_RESP_LEN;
+		CDC_Transmit_FS(report.bytes, len);
 		break;
 	default:
 		chk = false;

@@ -18,10 +18,12 @@
 
 #define USB_PACKET_TIMEOUT					(1000)
 #define LED_COMMAND_HEADER_LENGTH			(0x0A)
+#define GPIO_REQ_HEADER_LENGTH				(3)
 #define LED_BYTE_WIDTH(LED_TYPE)			(3 + LED_TYPE)
 
 typedef enum {
 	led_cmd = 0,
+	gpio_req = 1
 } usb_header_type_id;
 
 typedef enum {

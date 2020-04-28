@@ -14,14 +14,23 @@
 #include "stdbool.h"
 #include "debug_log.h"
 
+#define GPIO_STATUS_RESP_LEN 						(5)
+
 typedef struct{
 	uint16_t num_presses;
 	uint8_t active;
 	GPIO_TypeDef *port;
+}gpio_status_t;
+
+typedef struct{
+	uint8_t bytes[GPIO_STATUS_RESP_LEN];
 }gpio_status_report_t;
 
-gpio_status_report_t GpioStatus;
+gpio_status_t GpioStatus;
 
-void initializeButtonApp(GPIO_TypeDef *GPIO_Port);
+void initializeButtonApp(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin);
+
+
+gpio_status_report_t getGPIOStatusReport();
 
 #endif /* INC_BUTTON_APP_H_ */
