@@ -83,7 +83,7 @@ def test_usb_led_packet_com():
     for i in range(299):
         second_leds.append(LedRGBW(5, 0, 0, 0))
 
-    first_cmd = LedUSBCommand(first_leds, _animation_dir=0, _duration=200, _bus_num=1)
+    first_cmd = LedUSBCommand(first_leds, _animation_dir=1, _duration=200, _bus_num=1)
     print(first_cmd.header)
     ser.write(first_cmd.header)
     for packet in first_cmd.next_led_pattern_packet():
@@ -108,9 +108,9 @@ def test_usb_gpio_status_com():
 
 
 if __name__ == "__main__":
+    test_usb_led_packet_com()
     while True:
         print("sending packet...")
-        # test_usb_led_packet_com()
         print("sleeping for 1 second ")
         test_usb_gpio_status_com()
         time.sleep(1)
