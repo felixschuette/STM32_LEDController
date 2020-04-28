@@ -7,12 +7,19 @@ also be ported to any other MCU of the ST product family as it is built with Cub
 ## Pin-Out
 This project uses the STM32F102C8T6 bluepill board. An image of the board's pin-out is given below:
 ![STM32 Bluepill Pin-Out](https://2.bp.blogspot.com/-gxCk0N-ntew/V5T_sjk-ASI/AAAAAAAAOC8/5ad3JX70DLwqF705LqAcdxwhtajkaYPxgCLcB/s1600/stm32f103c8t6_pinout.png "STM32 Bluepill Pin-Out")
+We use the following pins in our project: 
+
+* PB3: is uses for SWO and debug output. 
+* PB15: Bus 0. Can be attached to an LED stripe.
+* PA7: Bus 1. Can be attached to an LED stripe.
+* PB12: GPIO input. Identified as GPIO 0x00.
+
 ## USB Communication
 For the USB communication between host and MCU, message frames are defined. These message frames serve to trigger actions (e.g. showing an LED pattern)
 to be performed by the MCU, or for the MCU to report on actions (e.g. button presses) to the Host. Currently, there are the following message types
 defined: 
 ### LED Command
-The _LED Command_ can be used to trigger the MCU to show specific color patterns on the attached LED stripes. Every LED Command begins with a specific header consisting of 10 bytes: 
+The _LED Command_ can be used by the host to trigger the MCU to show specific color patterns on the attached LED stripes. Every LED Command begins with a specific header consisting of 10 bytes: 
 
 | TYPE    | PACKET_NUM | PACKET_SIZE | LED_NUM | LED_TYPE | ANI_DIR | DURATION | BUS_NUM |
 |---------|------------|-------------|---------|----------|---------|----------|---------|
@@ -72,7 +79,7 @@ Depending on whether the _LED_TYPE_ was set to RGB or RGBW, each LED color consi
 </table>
 
 ### GPIO STATUS Communication
-To receive a status report of a specific GPIO the _GPIO STATUS REQUEST_ command can be used. The MCU responds to a _GPIO STATUS REQUEST_ by means of a _GPIO STATUS REPORT_. The report contains the number of detected low's and also indicates whether the GPIO is currently low. Below, the structure of the request and response frame is shown:
+To receive a status report of a specific GPIO the _GPIO STATUS REQUEST_ command can be used by the host. The MCU responds to a _GPIO STATUS REQUEST_ by means of a _GPIO STATUS REPORT_. The report contains the number of detected low's and also indicates whether the GPIO is currently low. Below, the structure of the request and response frame is shown:
 
 #### GPIO STATUS REQUEST Frame:
 
