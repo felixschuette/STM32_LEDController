@@ -70,3 +70,27 @@ Depending on whether the _LED_TYPE_ was set to RGB or RGBW, each LED color consi
     <td class="tg-0lax">1 Byte</td>
   </tr>
 </table>
+
+### GPIO STATUS Communication
+To receive a status report of a specific GPIO the _GPIO STATUS REQUEST_ command can be used. The MCU responds to a _GPIO STATUS REQUEST_ by means of a _GPIO STATUS REPORT_. The report contains the number of detected low's and also indicates whether the GPIO is currently low. Below, the structure of the request and response frame is shown:
+
+#### GPIO STATUS REQUEST Frame:
+
+| TYPE   | REQ_ID | GPIO_ID |
+|--------|--------|---------|
+| 1 Byte | 1 byte | 1 Byte  |
+
+* TYPE: identifies the message frame. In case of a request we use 0x01
+* REQ_ID: identifies the request type. For a _GPIO STATUS REQUEST_ we use 0x00 
+* GPIO_ID: identifies the GPIO of which the status is to be requested
+
+#### GPIO STATUS RESPONSE Frame:
+
+| TYPE   | RESP_ID | NUM_PRESS | ACTIV  |
+|--------|---------|-----------|--------|
+| 1 Byte | 1 Byte  | 2 byte    | 1 Byte |
+
+* TYPE: identifies the message. 0x00 corresponds to a response. 
+* RESP_ID: identifies the specific response that has been sent. 0x00 corresponds to a response to a _GPIO STATUS REQUEST_.
+* NUM_PRESS: gives the number of button presses that have been detected for the GPIO that was specified in the request since the last request. 
+* ACTIVE: indicates whether or not the GPIO is still hold. 
