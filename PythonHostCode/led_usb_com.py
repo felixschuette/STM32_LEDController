@@ -89,19 +89,29 @@ def test_usb_led_packet_com():
     for packet in first_cmd.next_led_pattern_packet():
         ser.write(packet)
         print(packet)
-
     time.sleep(1)
-    second_cmd = LedUSBCommand(second_leds, _animation_dir=0, _duration=200, _bus_num=1)
-    print(second_cmd.header)
-    ser.write(second_cmd.header)
-    for packet in second_cmd.next_led_pattern_packet():
-        ser.write(packet)
-        print(packet)
+    ser.close()
+
+
+def test_usb_gpio_status_com():
+    ser = serial.Serial('/dev/ttyACM0')
+    ser.close()
+    ser.open()
+    print(ser.name)
+
+    gpio_status_req = [1, 0, 0]
+    print("writing gpio status req now.")
+    ser.write(gpio_status_req)
+    print(ser.read(5))
+    time.sleep(1)
+    ser.close()
+
 
 if __name__ == "__main__":
     while True:
         print("sending packet...")
-        test_usb_led_packet_com()
+        # test_usb_led_packet_com()
         print("sleeping for 1 second ")
+        test_usb_gpio_status_com()
         time.sleep(1)
 
