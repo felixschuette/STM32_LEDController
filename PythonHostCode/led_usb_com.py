@@ -107,7 +107,7 @@ def test_usb_gpio_status_com():
     button_presses = bytes_read[2] << 8 | bytes_read[3]
     if bytes_read[4] == 1:
         print("Button is currently pushed")
-    if bytes_read[3] > 0:    
+    if button_presses > 0:    
         print("detected button presses", button_presses)
     time.sleep(1)
     ser.close()
