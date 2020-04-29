@@ -97,12 +97,18 @@ def test_usb_gpio_status_com():
     ser = serial.Serial('/dev/ttyACM0')
     ser.close()
     ser.open()
-    print(ser.name)
+    # print(ser.name)
 
     gpio_status_req = [1, 0, 0]
-    print("writing gpio status req now.")
+    # print("writing gpio status req now.")
     ser.write(gpio_status_req)
-    print(ser.read(5))
+    bytes_read = ser.read(5)
+    # print(bytes_read)
+    button_presses = bytes_read[2] << 8 | bytes_read[3]
+    if bytes_read[4] == 1:
+        print("Button is currently pushed")
+    if bytes_read[3] > 0:    
+        print("detected button presses", button_presses)
     time.sleep(1)
     ser.close()
 
@@ -110,8 +116,8 @@ def test_usb_gpio_status_com():
 if __name__ == "__main__":
     test_usb_led_packet_com()
     while True:
-        print("sending packet...")
-        print("sleeping for 1 second ")
+      #  print("sending packet...")
+      #  print("sleeping for 1 second ")
         test_usb_gpio_status_com()
         time.sleep(1)
 
