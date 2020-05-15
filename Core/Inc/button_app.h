@@ -15,7 +15,7 @@
 #include "debug_log.h"
 
 #define GPIO_STATUS_RESP_LEN 						(5)
-#define GPIO_BOUNCING_TIME							(10)
+#define GPIO_BOUNCING_TIME							(50)
 
 typedef struct{
 	uint16_t num_presses;

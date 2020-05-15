@@ -140,7 +140,7 @@ static uint8_t processNextPacket(uint8_t *buf, uint32_t len) {
 
 void USB_packetRxCallback(uint8_t *buf, uint32_t *len) {
 	/* transmitting back the received message */
-	CDC_Transmit_FS(buf, *len);
+	//CDC_Transmit_FS(buf, *len);
 	uint8_t chk = EXIT_FAILURE;
 	bool time_out = false;
 	debug_log("received new packet ...");

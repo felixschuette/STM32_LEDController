@@ -36,10 +36,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 			debug_log("Duration pressed: %d", press_duration);
 			GpioStatus.num_presses++;
 		}
-		debug_log("GPIO_INACTIVE");
 	} else if((pin_state == GPIO_PIN_SET) && (GpioStatus.active == GPIO_PIN_RESET)) {
 		GpioStatus.active = GPIO_PIN_SET;
 		falling_edge_timestamp = HAL_GetTick();
-		debug_log("GPIO_ACTIVE");
 	}
 }

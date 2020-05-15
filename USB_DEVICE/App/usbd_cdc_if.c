@@ -24,6 +24,8 @@
 
 /* USER CODE BEGIN INCLUDE */
 #include "usb_packet.h"
+#include "debug_log.h"
+#include "stdio.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -291,6 +293,11 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 	}
 	USBD_CDC_SetTxBuffer(&hUsbDeviceFS, Buf, Len);
 	result = USBD_CDC_TransmitPacket(&hUsbDeviceFS);
+	printf("Transmitting Packet: ");
+	for(int i = 0; i < Len; i++){
+		printf("%d", Buf[i]);
+	}
+	printf("\r\n");
   /* USER CODE END 7 */
   return result;
 }
