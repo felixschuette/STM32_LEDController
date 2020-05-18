@@ -20,6 +20,7 @@
 typedef struct{
 	uint16_t num_presses;
 	uint8_t active;
+	uint32_t rising_edge_timestamp;
 	GPIO_TypeDef *port;
 }gpio_status_t;
 

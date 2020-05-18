@@ -100,7 +100,6 @@ def test_usb_gpio_status_com():
     # print(ser.name)
 
     gpio_status_req = [1, 0, 0]
-    # print("writing gpio status req now.")
     ser.write(gpio_status_req)
     bytes_read = ser.read(5)
     # print(bytes_read)
